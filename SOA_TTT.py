@@ -160,9 +160,10 @@ def main():
             board[move] = player
             os.system('cls' if os.name == 'nt' else 'clear')
             print("Player move:   ", move + 1)
-            move = minimax(board, 100, -inf, inf, isX)[1]
-            board[move] = opp
-            print("Opponent move: ", move + 1)
+            if ('e' in ''.join(board)):
+                move = minimax(board, 100, -inf, inf, isX)[1]
+                board[move] = opp
+                print("Opponent move: ", move + 1)
             print_board(board)
         else:
             os.system('cls' if os.name == 'nt' else 'clear')
@@ -178,10 +179,10 @@ def main():
         print("You tied, you're only as good as the AI")
         
     time.sleep(0.5)
-    print("Exiting in ", end='')
+    print("Exiting in...")
     for i in range(-3,0):
         time.sleep(1)
         i *= -1
-        print(f"{i}...", end='')
+        print(f"{i}...")
 
 main()
