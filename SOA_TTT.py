@@ -2,16 +2,6 @@ from math import inf
 import os, time
 
 
-def choose_move(board, depth, isX):
-    if (isX):
-        score_val = -inf
-    else:
-        score_val = inf
-    move = minimax(board, depth, -inf, inf, isX)
-
-    return move[1]
-
-
 def generate_moves(board):
     next_moves = []
 
@@ -26,6 +16,7 @@ def generate_moves(board):
 
 
 def minimax(board, depth, alpha, beta, isX):
+    move_list = generate_moves(board)
     best_move = -1
     if (isX):
         player = 'x'
@@ -34,10 +25,10 @@ def minimax(board, depth, alpha, beta, isX):
         player = 'o'
         utility = inf
 
-    if (depth == 0 or check_win(board, isX)):
+    if (depth == 0 or not move_list or check_win(board, isX)):
         return heuristic(board), best_move
     
-    for move in generate_moves(board):
+    for move in move_list:
         board[move] = player
         test_utility, pos = minimax(board, depth - 1, alpha, beta, not isX)
         board[move] = 'e'
@@ -127,7 +118,7 @@ def print_board(board):
 
 
 def main():
-    board = ['e','e','e','e','e','e','e','e','e']
+    board = ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e']
     print("Tic Tac Toe by Ron")
     player = ' '
 
@@ -169,7 +160,7 @@ def main():
             board[move] = player
             os.system('cls' if os.name == 'nt' else 'clear')
             print("Player move:   ", move + 1)
-            move = minimax(board, 100, -inf, inf, not isX)[1]
+            move = minimax(board, 100, -inf, inf, isX)[1]
             board[move] = opp
             print("Opponent move: ", move + 1)
             print_board(board)
@@ -186,6 +177,11 @@ def main():
     else:
         print("You tied, you're only as good as the AI")
         
-    time.sleep(5)
+    time.sleep(0.5)
+    print("Exiting in ", end='')
+    for i in range(-3,0):
+        time.sleep(1)
+        i *= -1
+        print(f"{i}...", end='')
 
 main()
