@@ -1,5 +1,5 @@
 from math import inf
-import os
+import os, time
 
 
 def choose_move(board, depth, isX):
@@ -186,5 +186,6 @@ def main():
     else:
         print("You tied, you're only as good as the AI")
         
+    time.sleep(5)
 
 main()
