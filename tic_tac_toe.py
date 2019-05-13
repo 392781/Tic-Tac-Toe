@@ -3,6 +3,22 @@ import os, time
 
 
 def generate_moves(board):
+    """
+    Finds possible places to move
+    
+    Parameters
+    ----------
+    board : list
+        a list length 9 containing 3x3 board positions as strings
+        'x' denotes player
+        'o' denotes opponent
+        'e' denotes an empty space
+        
+    Returns
+    -------
+    list
+        list of open spaces on the board
+    """
     next_moves = []
 
     if(check_win(board, 'x') or check_win(board, 'o')):
@@ -16,6 +32,43 @@ def generate_moves(board):
 
 
 def minimax(board, depth, alpha, beta, isX):
+    """
+    Minimax algorithm with alpha-beta pruning.  
+    Determines utility of a move made by the player (maximizing)
+    by looking ahead to see which move the opponent will choose
+    (minimizing) and then looking at the best move for the player 
+    based off that move and so on and so on until 
+    1. Search depth is exceeded
+    2. Best/Winning move is found
+    3. No more moves left to check
+    
+    Alpha-Beta pruning compares the maximizing parameter (alpha) 
+    with the minimizing parameter (beta) to cut the search early
+    
+    
+    Parameters
+    ----------
+    board : list
+        a list length 9 containing 3x3 board positions as strings
+        'x' denotes player
+        'o' denotes opponent
+        'e' denotes an empty space
+    depth : int
+        desired depth of the search tree
+    alpha : float
+        maximizing parameter, initially set to -inf
+    beta : float
+        minimizing parameter, initially set to inf
+    isX : bool
+        True if maximizing 'x'
+        False if maximizing 'o'
+        
+    Returns
+    -------
+    int, int
+        utility value used by minimax
+        best position value for maximizing player
+    """
     move_list = generate_moves(board)
     best_move = -1
     if (isX):
@@ -52,6 +105,27 @@ def minimax(board, depth, alpha, beta, isX):
 
 
 def heuristic(board):
+    """
+    Heuristic used to determine utility of board.
+    Board is scored by the following:
+    
+    +100/-100 if 3 values are in a row
+    +10/-10 if 2 values are in a row with an empty space
+    +1/-1 if 1 value is found with 2 empty spaces
+    
+    Parameters
+    ----------
+    board : list
+        a list length 9 containing 3x3 board positions as strings
+        'x' denotes player
+        'o' denotes opponent
+        'e' denotes an empty space
+    
+    Returns
+    -------
+    int
+        utility value of the board
+    """
     score = 0
     _3row = ['xxx', 'ooo']
     _2row = ['xxe', 'exx', 'ooe', 'eoo']
@@ -85,6 +159,25 @@ def heuristic(board):
             
 
 def check_win(board, player):
+    """
+    Checks whether the game is won by the current player
+    
+    Parameters
+    ----------
+    board : list
+        a list length 9 containing 3x3 board positions as strings
+        'x' denotes player
+        'o' denotes opponent
+        'e' denotes an empty space
+    player : string
+        'x' for player
+        'o' for opponent
+        
+    Returns
+    -------
+    bool
+        True if game is won, False if game is lost
+    """
     test_board = board
     
     if (
@@ -103,6 +196,23 @@ def check_win(board, player):
 
 
 def print_board(board):
+    """
+    Helper method to pretty print the game board in the
+    following format:
+     1 | 2 | 3
+    ---+---+---
+     4 | 5 | 6
+    ---+---+---
+     7 | 8 | 9
+       
+    Parameters
+    ----------
+    board : list
+        a list length 9 containing 3x3 board positions as strings
+        'x' denotes player
+        'o' denotes opponent
+        'e' denotes an empty space
+    """
     for i in range(0, 9):
         if(i == 8):
             string = '\n'
@@ -118,10 +228,12 @@ def print_board(board):
 
 
 def main():
+    # Initialize gameboard
     board = ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e']
     print("Tic Tac Toe by Ron")
     player = ' '
 
+    # Let user choose which player they'd like to be
     while (player not in 'xXoO'):
         player = input("X/O? ")
 
@@ -130,6 +242,7 @@ def main():
 
         player = player.lower()
 
+    # Sets playing parameters and clears console
     if (player == 'x'):
         player = 'x'
         opp = 'o'
@@ -147,7 +260,10 @@ def main():
     else:
         exit()
 
+    # Begin game until Win or Tie is found
     while((not check_win(board, player) and not check_win(board, opp)) and ('e' in ''.join(board))):
+        # Player inputs a move on the board
+        # If input is invalid, game exits (Could be handled better)
         move = input("Player move [1 - 9]? ")
         try:
             move = int(move)
@@ -156,6 +272,8 @@ def main():
             print("invalid input")
             exit()
 
+        # Place the player move, clear console, find AI move, print board
+        # Else, try getting a move again
         if (board[move] == 'e' and move in range(0, 9)):
             board[move] = player
             os.system('cls' if os.name == 'nt' else 'clear')
@@ -170,7 +288,8 @@ def main():
             print("Player invalid move: ", move + 1)
             print_board(board)
             print("Invalid move, try again [1 - 9]? ")
-
+    
+    # Check who won the game
     if (check_win(board, player)):
         print("You won! Congrats!")
     elif(check_win(board, opp)):
@@ -178,6 +297,7 @@ def main():
     else:
         print("You tied, you're only as good as the AI")
         
+    # Exit after 3 seconds
     time.sleep(0.5)
     print("Exiting in...")
     for i in range(-3,0):
@@ -185,4 +305,5 @@ def main():
         i *= -1
         print(f"{i}...")
 
+# Call main
 main()
